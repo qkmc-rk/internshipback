@@ -8,7 +8,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.whystudio.internship.entity.Weblog;
-import org.whystudio.internship.service.IWeblogService;
 import org.whystudio.internship.util.IpTool;
 import org.whystudio.internship.util.JWTTool;
 
@@ -39,8 +37,6 @@ import java.util.Map;
 @Component
 public class WeblogAspect {
 
-    @Autowired
-    IWeblogService weblogService;
 
     @Pointcut("execution(public * org.whystudio.internship.controller.*.*(..))")
     public void weblog() {
@@ -83,11 +79,9 @@ public class WeblogAspect {
             weblog.setIp(IpTool.getIpAddr(request));
             weblog.setMethod(request.getMethod());
             weblog.setParameter(getParameter(method, joinPoint.getArgs()));
-//        weblog.setResult(null == result ? null : result.toString().substring(0,5000));
             weblog.setSpendtime((int) Duration.between(startTime, endTime).toMillis());
             weblog.setStarttime(startTime);
-//        log.info(String.valueOf(weblog));
-            weblogService.save(weblog);
+            log.info(String.valueOf(weblog));
         } catch (Exception e) {
             log.error("WebLog Error：{}", e.getMessage());
         }
